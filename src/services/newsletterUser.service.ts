@@ -34,7 +34,6 @@ export const createNewsletterUser = async (NewsletterUserData: typeof Newsletter
   return user
     .save()
     .then((result: any) => {
-      console.log('Result:', result)
       return Promise.resolve(result)
     })
     .catch((error: any) => {
@@ -58,7 +57,21 @@ export const checkIfNewsletterUserExists = async (email: string) => {
 /*
 UPDATE NewsletterUser INFORMATION
 */
-export const updateNewsletterUser = async (id: string, update: Partial<typeof NewsletterUser>): Promise<typeof NewsletterUser | null> => {
+export const updateNewsletterUserByEmail = async (email: string, update: Partial<typeof NewsletterUser>): Promise<typeof NewsletterUser | null> => {
+  const NewsletterUserModel: Model<Document & typeof NewsletterUser> = mongoose.model('NewsletterUser');
+  try {
+    const updatedNewsletterUser = await NewsletterUserModel.findOneAndUpdate({ email: email }, update, { new: true });
+    return updatedNewsletterUser;
+  } catch (error) {
+    console.error(`Error updating NewsletterUser: ${error}`);
+    return null;
+  }
+};
+
+/*
+UPDATE NewsletterUser INFORMATION
+*/
+export const updateNewsletterUserById = async (id: string, update: Partial<typeof NewsletterUser>): Promise<typeof NewsletterUser | null> => {
   const NewsletterUserModel: Model<Document & typeof NewsletterUser> = mongoose.model('NewsletterUser');
   try {
     const updatedNewsletterUser = await NewsletterUserModel.findOneAndUpdate({ _id: id }, update, { new: true });
