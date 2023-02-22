@@ -13,8 +13,6 @@ const dbUri: string = process.env.MONGO_ATLAS_URI || ''
 const dbName: string = process.env.DB_NAME || ''
 const UriQueryParam: string = process.env.QUERY_PARAMETERS || ''
 
-console.log(dbUri + dbName + UriQueryParam)
-
 // Body parsing Middleware
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))

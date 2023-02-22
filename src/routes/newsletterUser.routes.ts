@@ -9,13 +9,13 @@ export const newsletterRouter: Router = express.Router()
 
 // Get all Newsletter Users
 newsletterRouter.get('/newsletter', async (req: Request, res: Response) => {
-    await getAllNewsletterUsers().then((result) => {
-        res.status(201).json({ message: 'All users', users: result})
-    })
-    .catch((error) => {
+    try {
+        const result = await getAllNewsletterUsers()
+        res.status(201).json({ users: result })
+    } catch (error) {
         console.log(`Error retrieving all users: ${error}`)
         res.status(500).json({ message: 'Error getting users', error})
-    })
+    }
 })
 
 // Get Newsletter User by email
@@ -23,13 +23,13 @@ newsletterRouter.get('/newsletter/:email', async (req: Request, res: Response) =
     const email = req.params.email
     const userExists =  await checkIfNewsletterUserExistsByEmail(email)
     if (userExists) {
-        await getNewsletterUserByEmail(email).then((result) => {
-            res.status(201).json({ user: result })
-        })
-        .catch((error) => {
+        try {
+            const user = await getNewsletterUserByEmail(email)
+            res.status(201).json({ user: user})
+        } catch (error) {
             console.log(`Error retrieving user ${error}`)
-            res.status(500).json({ message: 'Error getting user', error})
-        })
+            res.status(500).json({ message: `Error retrieving ${email}`, error})
+        }
     } else {
         console.log(`Email ${email} does not exist`)
         res.status(401).json({ message: `${email} does not exist in database`})
@@ -47,17 +47,16 @@ newsletterRouter.post('/newsletter', async (req: Request, res: Response) => {
         res.status(401).json({ mesage: errorMessage.email})
     }
     if (userExists) {
-        res.status(400).json({ message: 'User already exists' })
+        res.status(400).json({ message: `${email} already exists` })
     } else {
-        createNewsletterUser(userData)
-            .then((result) => {
-                console.log('User created successfully: ', result)
-                res.status(201).json({ message: 'User created', data: userData })
-            })
-            .catch((error) => {
-                console.log('Error creating user: ', error)
-                res.status(500).json({ message: 'Error creating user', error })
-            })
+        try {
+            const result = await createNewsletterUser(userData)
+            console.log('User created successfully: ', result)
+            res.status(201).json({ message: 'User created', data: userData })
+        } catch (error) {
+            console.log('Error creating user: ', error)
+            res.status(500).json({ message: 'Error creating user', error })
+        }
     }
 })
 
