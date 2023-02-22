@@ -43,11 +43,23 @@ export const createNewsletterUser = async (NewsletterUserData: typeof Newsletter
 }
 
 /*
-CHECK IF NewsletterUser EXISTS 
+CHECK IF NewsletterUser EXISTS by email
 check the NewsletterUsername against the database for duplicates before proceeding with creation of new NewsletterUser
 */
-export const checkIfNewsletterUserExists = async (email: string) => {
+export const checkIfNewsletterUserExistsByEmail = async (email: string) => {
   const existingNewsletterUser = await NewsletterUser.findOne({ email });
+  if (existingNewsletterUser) {
+    return true;
+  }
+  return false;
+};
+
+/*
+CHECK IF NewsletterUser EXISTS by ID
+check the NewsletterUsername against the database for duplicates before proceeding with creation of new NewsletterUser
+*/
+export const checkIfNewsletterUserExistsById = async (id: string) => {
+  const existingNewsletterUser = await NewsletterUser.findById({ _id: id });
   if (existingNewsletterUser) {
     return true;
   }
