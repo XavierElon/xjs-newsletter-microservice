@@ -11,6 +11,4 @@ RUN --mount=type=cache,target=/var/cache/yarn yarn config set cache-folder /var/
 COPY . .
 EXPOSE 420
 
-RUN npm install pm2 -g
-
-CMD ["pm2", "start", "npm", "--name", "newsletter-microservice", "--", "start", "--watch"]
+CMD ["yarn", "run", "dev"]

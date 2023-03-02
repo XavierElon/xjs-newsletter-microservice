@@ -106,7 +106,3 @@ export const deleteNewsletterUser = async (email: string): Promise<any | null> =
     return null;
   }
 }
-
-
-
-
