@@ -47,6 +47,7 @@ newsletterRouter.post('/newsletter', async (req: Request, res: Response) => {
         res.status(401).json({ mesage: errorMessage.email})
     }
     if (userExists) {
+        console.error(`${email} already exists.`)
         res.status(400).json({ message: `${email} already exists` })
     } else {
         try {
