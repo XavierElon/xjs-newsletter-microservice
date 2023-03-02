@@ -2,10 +2,10 @@ import { NewsletterUser } from '../models/newsletterUser.model'
 import mongoose, { Model } from 'mongoose'
 
 // GET All newsletter users
-export const getAllNewsletterUsers = async (): Promise<typeof NewsletterUser[] | null> => {
-  const User: Model<Document & typeof NewsletterUser> = mongoose.model('NewsletterUser')
+export const getAllNewsletterUsers = async (): Promise<any | null> => {
+  // const User: Model<Document & typeof NewsletterUser> = mongoose.model('NewsletterUser')
   try {
-    const all = await User.find()
+    const all = await NewsletterUser.find()
     console.log(all)
     return all
   } catch (error) {
@@ -14,11 +14,10 @@ export const getAllNewsletterUsers = async (): Promise<typeof NewsletterUser[] |
   }
 }
 
-export const getNewsletterUserByEmail =  async (email: string): Promise<typeof NewsletterUser | null>  => {
-  const NewsletterUserModel: Model<Document & typeof NewsletterUser> = mongoose.model('NewsletterUser');
+export const getNewsletterUserByEmail =  async (email: string): Promise<any| null>  => {
   try {
-    const NewsletterUser = await NewsletterUserModel.findOne({ email });
-    return NewsletterUser || null;
+    const User = await NewsletterUser.findOne({ email });
+    return User || null;
   } catch (error) {
     console.error(`Error while getting NewsletterUser by email: ${error}`);
     return null;
@@ -29,7 +28,7 @@ export const getNewsletterUserByEmail =  async (email: string): Promise<typeof N
 CREATE NewsletterUser
 This function creates a new NewsletterUser using the NewsletterUserSchema and saves it to the database
 */
-export const createNewsletterUser = async (NewsletterUserData: typeof NewsletterUser): Promise<any> => {
+export const createNewsletterUser = async (NewsletterUserData: any): Promise<any> => {
   const user = new NewsletterUser(NewsletterUserData)
   return user
     .save()
@@ -69,10 +68,10 @@ export const checkIfNewsletterUserExistsById = async (id: string) => {
 /*
 UPDATE NewsletterUser INFORMATION
 */
-export const updateNewsletterUserByEmail = async (email: string, update: Partial<typeof NewsletterUser>): Promise<typeof NewsletterUser | null> => {
-  const NewsletterUserModel: Model<Document & typeof NewsletterUser> = mongoose.model('NewsletterUser');
+export const updateNewsletterUserByEmail = async (email: string, update: Partial<any>): Promise<any | null> => {
+  // const NewsletterUserModel: Model<Document & typeof NewsletterUser> = mongoose.model('NewsletterUser');
   try {
-    const updatedNewsletterUser = await NewsletterUserModel.findOneAndUpdate({ email: email }, update, { new: true });
+    const updatedNewsletterUser = await NewsletterUser.findOneAndUpdate({ email: email }, update, { new: true });
     return updatedNewsletterUser;
   } catch (error) {
     console.error(`Error updating NewsletterUser: ${error}`);
@@ -83,10 +82,10 @@ export const updateNewsletterUserByEmail = async (email: string, update: Partial
 /*
 UPDATE NewsletterUser INFORMATION
 */
-export const updateNewsletterUserById = async (id: string, update: Partial<typeof NewsletterUser>): Promise<typeof NewsletterUser | null> => {
-  const NewsletterUserModel: Model<Document & typeof NewsletterUser> = mongoose.model('NewsletterUser');
+export const updateNewsletterUserById = async (id: string, update: Partial<any>): Promise<any | null> => {
+  // const NewsletterUserModel: Model<Document & typeof NewsletterUser> = mongoose.model('NewsletterUser');
   try {
-    const updatedNewsletterUser = await NewsletterUserModel.findOneAndUpdate({ _id: id }, update, { new: true });
+    const updatedNewsletterUser = await NewsletterUser.findOneAndUpdate({ _id: id }, update, { new: true });
     return updatedNewsletterUser;
   } catch (error) {
     console.error(`Error updating NewsletterUser: ${error}`);
@@ -97,10 +96,10 @@ export const updateNewsletterUserById = async (id: string, update: Partial<typeo
 /*
 DELETE NewsletterUser
 */
-export const deleteNewsletterUser = async (email: string): Promise<typeof NewsletterUser | null> => {
-  const NewsletterUserModel: Model<Document & typeof NewsletterUser> = mongoose.model('NewsletterUser');
+export const deleteNewsletterUser = async (email: string): Promise<any | null> => {
+
   try {
-    const deletedNewsletterUser = await NewsletterUserModel.findOneAndDelete({ email });
+    const deletedNewsletterUser = await NewsletterUser.findOneAndDelete({ email });
     return deletedNewsletterUser;
   } catch (err) {
     console.error(err);
