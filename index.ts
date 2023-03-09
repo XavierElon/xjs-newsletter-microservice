@@ -20,7 +20,7 @@ app.use(cors())
 app.use(newsletterRouter)
 
 app.get('/', async (req: Request, res: Response): Promise<Response> => {
-    return res.status(200).send({ message: 'Typescript node server running for newsletter microservice!' })
+    return res.status(200).send({ message: 'Achilles' })
 })
 
 try{
