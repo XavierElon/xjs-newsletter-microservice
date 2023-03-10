@@ -24,7 +24,6 @@
   },
   "homepage": "https://github.com/XavierElon/xsj-newsletter-microservice#readme",
   "dependencies": {
-    "@types/chai": "^4.3.4",
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "i": "^0.3.7",
