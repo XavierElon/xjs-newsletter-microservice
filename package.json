@@ -4,6 +4,8 @@
   "description": "",
   "main": "main.ts",
   "scripts": {
+    "env-setup-local": "./src/config/deploy/local.sh",
+    "env-setup-prod": "./src/config/deploy/prod.sh",
     "dev": "ts-node-dev ./index.ts",
     "build": "npx tsc",
     "start": "node dist/index.js",
