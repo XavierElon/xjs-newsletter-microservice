@@ -25,15 +25,24 @@ describe('Newsletter Routes', () => {
 
     after(async () => {
         // Empty database
+        NewsletterUser.deleteMany({}, () => {
+            console.log('DELETED')
+        })
         await mongoose.disconnect()
     })
 
-    it('should add 2 newsletter users', () => {
-        console.log('testing')
+    it('should add 2 newsletter users and return 201 status code', async () => {
+        const res = await request(app).post('/newsletter').send(NewsletterUserMocks[0])
+        console.log(res.status)
+        console.log(res.body)
+        expect(res.status).to.equal(201)
+        const res2 = await request(app).post('/newsletter').send(NewsletterUserMocks[1])
+        // console.log(res2)
     })
 
-    it('should return 2 newsletter users', () => {
-
+    it('should return 2 newsletter users',async () => {
+        const res = await request(app).get('/newsletter')
+        expect(res.body.users.length).to.equal(2)
     })
 
     it('should find a newletter user by email', () => {
