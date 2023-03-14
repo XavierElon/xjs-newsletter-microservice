@@ -26,7 +26,7 @@ describe('Newsletter Routes', () => {
     after(async () => {
         // Empty database
         NewsletterUser.deleteMany({}, () => {
-            console.log('DELETED')
+            console.log('NEWSLETTER USERS DELETED')
         })
         await mongoose.disconnect()
     })
