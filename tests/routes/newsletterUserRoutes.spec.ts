@@ -21,7 +21,8 @@ describe('Newsletter Routes', () => {
     let userEmail: string = 'xavier@test.com'
     const newEmail: string = 'elonmusk@gmail.com'
     const nonExistentEmail: string  = 'achillesflocka@gmail.com'
-    const badEmail: string = 'achillesflockja@gmail'
+    const existingEmail: string = 'achilles@gmail.com'
+    const invalidEmail: string = 'achillesflocka@gmail'
     const testDbUri: string = process.env.TEST_DB_URI!
 
     before(async () => {
@@ -49,12 +50,12 @@ describe('Newsletter Routes', () => {
         expect(res.body.users.length).to.equal(2)
     })
 
-    it('should find a newletter user by email with 201 status code', async () => {
+    it('should find a newletter user by email with 200 status code', async () => {
         const res  = await request(app).get(`/newsletter/${userEmail}`)
-        expect(res.status).to.equal(201)
+        expect(res.status).to.equal(200)
     })
 
-    it('should update a newsletter user by email with 201', async () => {
+    it('should update a newsletter user by email with 201 status code', async () => {
         const newUser = {
             email: newEmail
         }
@@ -76,10 +77,10 @@ describe('Newsletter Routes', () => {
         expect(response.body.result.subscribed).to.equal(false)
     })
 
-    it('should delete a user by email with 201 status code', async () => {
+    it('should delete a user by email with 200 status code', async () => {
         const email: string = 'elonmusk@gmail.com'
         const res = await request(app).delete(`/newsletter/${email}`)
-        expect(res.status).to.equal(201)
+        expect(res.status).to.equal(200)
     })
 
     it('should return one user', async () => {
@@ -87,12 +88,33 @@ describe('Newsletter Routes', () => {
         expect(res.body.users.length).to.equal(1)
     })
 
-    it('should not get user by email and return 401 status', async () => {
-        const res = await request(app).get(`/newsletter/${nonExistentEmail}`)
-        expect(res.status).to.equal(401)
+    it('should find email invalid and return 422 status code', async () => {
+        const res = await request(app).get(`/newsletter/${invalidEmail}`)
+        expect(res.status).to.equal(422)
     })
 
-    it('should not create a user because email is not valid', async () => {
-        
+    it('should not get user by email and return 404 status code', async () => {
+        const res = await request(app).get(`/newsletter/${nonExistentEmail}`)
+        expect(res.status).to.equal(404)
+    })
+
+    it('should not create a user because email is not valid and return 422 status code', async () => {
+        const res = await request(app).post('/newsletter').send({ email: invalidEmail, subscribed: true })
+        expect(res.status).to.equal(422)
+    })
+
+    it('should not create new user because email already exists and return 400 status code', async () => {
+        const res = await request(app).post('/newsletter').send({ email: existingEmail, subscribed: true })
+        expect(res.status).to.equal(400)
+    })
+
+    it('should not update user by email because email is not valid and return 422 status code', async () => {
+        const res = await request(app).patch(`/newsletter/${existingEmail}`).send({ email: invalidEmail })
+        expect(res.status).to.equal(422)
+    })
+
+    it('should not find email because it does not exist and return 404 status code', async () => {
+        const res = await request(app).patch(`/newsletter/${nonExistentEmail}`).send({ email: 'test@gmail.com', subscribed: false })
+        expect(res.status).to.equal(404)
     })
 })

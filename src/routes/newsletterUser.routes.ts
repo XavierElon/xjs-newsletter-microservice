@@ -22,14 +22,13 @@ newsletterRouter.get('/newsletter', async (req: Request, res: Response) => {
 
 // Get Newsletter User by email
 newsletterRouter.get('/newsletter/:email', async (req: Request, res: Response) => {
-    const email:string = req.params.email
-    const userExists:boolean = await checkIfNewsletterUserExistsByEmail(email)
+    const email: string = req.params.email
+    const userExists: boolean = await checkIfNewsletterUserExistsByEmail(email)
     const emailIsValid: boolean = validateEmail(email)
-    
     if(!emailIsValid) {
         res.status(422).json({ message: errorMessage.email })
     }
-    if (userExists) {
+    else if (userExists) {
         try {
             const user = await getNewsletterUserByEmail(email)
             res.status(200).json({ user: user})
@@ -53,7 +52,7 @@ newsletterRouter.post('/newsletter', async (req: Request, res: Response) => {
     if (!emailIsValid) {
         res.status(422).json({ mesage: errorMessage.email})
     }
-    if (userExists) {
+    else if (userExists) {
         console.error(`${email} already exists.`)
         res.status(400).json({ message: `${email} already exists` })
     } else {
@@ -70,13 +69,13 @@ newsletterRouter.post('/newsletter', async (req: Request, res: Response) => {
 // Patch Newsletter User by email
 newsletterRouter.patch('/newsletter/:email', async (req: Request, res: Response) => {
     const email: string = req.params.email
-    const emailIsValid: boolean = validateEmail(email)
+    const newEmail: string = req.body.email
+    const emailIsValid: boolean = validateEmail(newEmail)
     const userExists: boolean = await checkIfNewsletterUserExistsByEmail(email)
     
     if(!emailIsValid) {
         res.status(422).json({ message: errorMessage.email })
-    }
-    if (userExists) {
+    } else if (userExists) {
         try {
             const updatedUser = await updateNewsletterUserByEmail(email, req.body)
             console.log(`User updated: ${updatedUser}`)
@@ -106,7 +105,7 @@ newsletterRouter.patch('/newsletter/update/:id', async (req: Request, res: Respo
         }
     } else {
         console.log(`User with ${id} does not exist`)
-        res.status(401).json({ message: `User with ${id} does not exist in database`})
+        res.status(404).json({ message: `User with ${id} does not exist in database`})
     }
 })
 
@@ -119,17 +118,17 @@ newsletterRouter.delete('/newsletter/:email', async (req: Request, res: Response
     if (!isValidEmail) {
         res.status(422).json({ message: errorMessage.email })
     }
-    if (userExists) {
+    else if (userExists) {
         try {
             const result = await deleteNewsletterUser(email)
             console.log(`Email ${result} succesfully deleted from database`)
-            res.status(201).json({ message: `Email ${result} successfully deleted`})
+            res.status(200).json({ message: `Email ${result} successfully deleted`})
         } catch (error) {
             console.log(`Error deleteing ${email}: ${error}`)
             res.status(500).json({ message: `Error deleting ${email}`, error})
         }
     } else {
         console.log(`Email ${email} does not exist`)
-        res.status(401).json({ message: `${email} does not exist in database`})
+        res.status(404).json({ message: `${email} does not exist in database`})
     }
 })
