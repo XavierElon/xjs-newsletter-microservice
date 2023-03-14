@@ -9,7 +9,7 @@ export const getAllNewsletterUsers = async (): Promise<any | null> => {
     return all
   } catch (error) {
     console.error(`Error retrieving all newsletter users: ${error}`)
-    return null
+    throw new Error('No users found')
   }
 }
 
@@ -36,7 +36,7 @@ export const createNewsletterUser = async (NewsletterUserData: any): Promise<any
     })
     .catch((error: any) => {
       console.log('Error creating NewsletterUser: ', error)
-      return Promise.reject(error)
+      throw new Error('bad data')
     })
 }
 
@@ -81,14 +81,14 @@ export const updateNewsletterUserByEmail = async (email: string, update: Partial
 /*
 UPDATE NewsletterUser INFORMATION
 */
-export const updateNewsletterUserById = async (id: string, update: Partial<any>): Promise<any | null> => {
+export const updateNewsletterUserById = async (id: string, update: Partial<typeof NewsletterUser>): Promise<any | null> => {
   // const NewsletterUserModel: Model<Document & typeof NewsletterUser> = mongoose.model('NewsletterUser');
   try {
     const updatedNewsletterUser = await NewsletterUser.findOneAndUpdate({ _id: id }, update, { new: true });
     return updatedNewsletterUser;
   } catch (error) {
     console.error(`Error updating NewsletterUser: ${error}`);
-    return null;
+    throw new Error('Bad data')
   }
 };
 
@@ -102,6 +102,6 @@ export const deleteNewsletterUser = async (email: string): Promise<any | null> =
     return deletedNewsletterUser;
   } catch (err) {
     console.error(err);
-    return null;
+    throw new Error('Bad data')
   }
 }
