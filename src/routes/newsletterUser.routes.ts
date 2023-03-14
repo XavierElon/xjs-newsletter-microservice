@@ -69,8 +69,8 @@ newsletterRouter.post('/newsletter', async (req: Request, res: Response) => {
 // Patch Newsletter User by email
 newsletterRouter.patch('/newsletter/:email', async (req: Request, res: Response) => {
     const email: string = req.params.email
-    const newEmail: string = req.body.email
-    const emailIsValid: boolean = validateEmail(newEmail)
+    const newEmail: string | null = (req.body.email != null) ? req.body.email : null
+    const emailIsValid: boolean = (newEmail != null) ? validateEmail(newEmail) : true
     const userExists: boolean = await checkIfNewsletterUserExistsByEmail(email)
     
     if(!emailIsValid) {

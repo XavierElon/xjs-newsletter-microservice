@@ -113,8 +113,13 @@ describe('Newsletter Routes', () => {
         expect(res.status).to.equal(422)
     })
 
-    it('should not find email because it does not exist and return 404 status code', async () => {
-        const res = await request(app).patch(`/newsletter/${nonExistentEmail}`).send({ email: 'test@gmail.com', subscribed: false })
+    it('should not update user because the email does not exist and return 404 status code', async () => {
+        const res = await request(app).patch(`/newsletter/${nonExistentEmail}`).send({ subscribed: false })
+        expect(res.status).to.equal(404)
+    })
+
+    it('should not patch user because the id does not exist and return 404 status code', async () => {
+        const res = await request(app).patch(`/newsletter/${userId}`).send ({ subscrbied: false })
         expect(res.status).to.equal(404)
     })
 })
