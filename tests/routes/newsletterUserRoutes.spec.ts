@@ -122,4 +122,14 @@ describe('Newsletter Routes', () => {
         const res = await request(app).patch(`/newsletter/${userId}`).send ({ subscrbied: false })
         expect(res.status).to.equal(404)
     })
+
+    it('should not delete user because the email supplied is not valid and return 422 status code', async () => {
+        const res = await request(app).delete(`/newsletter/${invalidEmail}`)
+        expect(res.status).to.equal(422)
+    })
+
+    it ('should not delete user because the email does not exist adn return 404 status code', async () => {
+        const res = await request(app).delete(`/newsletter/${nonExistentEmail}`)
+        expect(res.status).to.equal(404)
+    })
 })
