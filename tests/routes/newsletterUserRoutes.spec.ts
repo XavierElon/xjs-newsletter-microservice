@@ -156,11 +156,4 @@ describe('Newsletter User Routes 500 status codes', () => {
         const res = await request(app).post('/newsletter').send({ badEmail: badEmail, subscribed: true, shouldFail: true })
         expect(res.status).to.equal(500)
     })
-
-    it('should not delete user and return 500 status code', async () => {
-        const res = await request(app).get('/newsletter')
-        userId = res.body.users[0]._id
-        const response = await request(app).patch(`/newsletter/update/${userId}`).send({ badData: 'bad'})
-        console.log(response.status)
-    })
 })
