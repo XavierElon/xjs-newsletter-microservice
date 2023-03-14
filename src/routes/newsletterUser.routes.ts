@@ -1,7 +1,9 @@
 import express, { Request, Response, Router } from 'express'
+import { ObjectId } from 'mongoose'
 import { checkIfNewsletterUserExistsByEmail, checkIfNewsletterUserExistsById, createNewsletterUser, deleteNewsletterUser, getAllNewsletterUsers, getNewsletterUserByEmail, updateNewsletterUserByEmail, updateNewsletterUserById } from '../services/newsletterUser.service'
 import { validateEmail } from '../utils/verification.helper'
 import { ErrorMessage } from '../structures/types'
+import { NewsletterUser } from '../models/newsletterUser.model'
 
 const errorMessage = new ErrorMessage()
 
@@ -43,10 +45,10 @@ newsletterRouter.get('/newsletter/:email', async (req: Request, res: Response) =
 
 // Create a User
 newsletterRouter.post('/newsletter', async (req: Request, res: Response) => {
-    const userData = req.body
-    const email = req.body.email
-    const emailIsValid = validateEmail(email)
-    const userExists = await checkIfNewsletterUserExistsByEmail(email)
+    const userData: typeof NewsletterUser = req.body
+    const email: string = req.body.email
+    const emailIsValid: boolean = validateEmail(email)
+    const userExists: boolean = await checkIfNewsletterUserExistsByEmail(email)
 
     if (!emailIsValid) {
         res.status(422).json({ mesage: errorMessage.email})
@@ -71,7 +73,6 @@ newsletterRouter.patch('/newsletter/:email', async (req: Request, res: Response)
     const emailIsValid: boolean = validateEmail(email)
     const userExists: boolean = await checkIfNewsletterUserExistsByEmail(email)
     
-
     if(!emailIsValid) {
         res.status(422).json({ message: errorMessage.email })
     }
@@ -93,7 +94,8 @@ newsletterRouter.patch('/newsletter/:email', async (req: Request, res: Response)
 // Patch Newsletter User by id
 newsletterRouter.patch('/newsletter/update/:id', async (req: Request, res: Response) => {
     const id = req.params.id
-    const userExists = await checkIfNewsletterUserExistsById(id)
+    const userExists: boolean = await checkIfNewsletterUserExistsById(id)
+
     if (userExists) {
         try {
             const updatedUser = await updateNewsletterUserById(id, req.body)
@@ -110,9 +112,13 @@ newsletterRouter.patch('/newsletter/update/:id', async (req: Request, res: Respo
 
 // Delete Newsletter User
 newsletterRouter.delete('/newsletter/:email', async (req: Request, res: Response) => {
-    const email = req.params.email
-    const userExists = await checkIfNewsletterUserExistsByEmail(email)
+    const email: string = req.params.email
+    const isValidEmail: boolean= validateEmail(email)
+    const userExists: boolean = await checkIfNewsletterUserExistsByEmail(email)
 
+    if (!isValidEmail) {
+        res.status(422).json({ message: errorMessage.email })
+    }
     if (userExists) {
         try {
             const result = await deleteNewsletterUser(email)
