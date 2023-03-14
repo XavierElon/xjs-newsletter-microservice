@@ -3,7 +3,8 @@ import mongoose, { Model } from 'mongoose'
 import request from 'supertest'
 import sinon from 'sinon'
 import dotenv from 'dotenv'
-import express, { Express } from 'express'
+import express, { Express, Response } from 'express'
+import { ObjectId } from 'mongoose'
 import { connectToDatabase } from '../../src/connections/mongodb'
 import { newsletterRouter } from '../../src/routes/newsletterUser.routes'
 import { NewsletterUser } from '../../src/models/newsletterUser.model'
@@ -16,9 +17,11 @@ app.use(express.json())
 app.use('/', newsletterRouter)
 
 describe('Newsletter Routes', () => {
-    let userId
-    let userEmail = 'xavier@test.com'
-    const badEmail = 'achillesflocka@gmail.com'
+    let userId: ObjectId
+    let userEmail: string = 'xavier@test.com'
+    const newEmail: string = 'elonmusk@gmail.com'
+    const nonExistentEmail: string  = 'achillesflocka@gmail.com'
+    const badEmail: string = 'achillesflockja@gmail'
     const testDbUri: string = process.env.TEST_DB_URI!
 
     before(async () => {
@@ -53,7 +56,7 @@ describe('Newsletter Routes', () => {
 
     it('should update a newsletter user by email with 201', async () => {
         const newUser = {
-            email: 'elonmusk@gmail.com'
+            email: newEmail
         }
         const res = await request(app).patch(`/newsletter/${userEmail}`).send(newUser)
         expect(res.status).to.equal(200)
@@ -63,7 +66,7 @@ describe('Newsletter Routes', () => {
 
     it('should update newsletter user by id with 200 status code and subscribed should be changed to false', async () => {
         const newUser = {
-            email: 'elonmusk@gmail.com',
+            email: newEmail,
             subscribed: false
         }
         const res = await request(app).get('/newsletter')
@@ -79,8 +82,17 @@ describe('Newsletter Routes', () => {
         expect(res.status).to.equal(201)
     })
 
-    it('should be only one user remaining', async () => {
+    it('should return one user', async () => {
         const res = await request(app).get('/newsletter')
         expect(res.body.users.length).to.equal(1)
+    })
+
+    it('should not get user by email and return 401 status', async () => {
+        const res = await request(app).get(`/newsletter/${nonExistentEmail}`)
+        expect(res.status).to.equal(401)
+    })
+
+    it('should not create a user because email is not valid', async () => {
+        
     })
 })
