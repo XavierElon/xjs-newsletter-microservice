@@ -6,7 +6,6 @@ export const getAllNewsletterUsers = async (): Promise<any | null> => {
   // const User: Model<Document & typeof NewsletterUser> = mongoose.model('NewsletterUser')
   try {
     const all = await NewsletterUser.find()
-    console.log(all)
     return all
   } catch (error) {
     console.error(`Error retrieving all newsletter users: ${error}`)

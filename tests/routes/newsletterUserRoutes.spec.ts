@@ -16,10 +16,13 @@ app.use(express.json())
 app.use('/', newsletterRouter)
 
 describe('Newsletter Routes', () => {
+    let userId
+    let userEmail = 'xavier@test.com4'
     console.log(NewsletterUserMocks)
     const testDbUri: string = process.env.TEST_DB_URI!
 
     before(async () => {
+        // NewsletterUser.deleteMany({})
         await connectToDatabase(testDbUri as string)
     })
 
@@ -31,13 +34,11 @@ describe('Newsletter Routes', () => {
         await mongoose.disconnect()
     })
 
-    it('should add 2 newsletter users and return 201 status code', async () => {
+    it('should add 2 newsletter users and return 201 status code for both', async () => {
         const res = await request(app).post('/newsletter').send(NewsletterUserMocks[0])
-        console.log(res.status)
-        console.log(res.body)
         expect(res.status).to.equal(201)
         const res2 = await request(app).post('/newsletter').send(NewsletterUserMocks[1])
-        // console.log(res2)
+        expect(res2.status).to.equal(201)
     })
 
     it('should return 2 newsletter users',async () => {
@@ -45,8 +46,9 @@ describe('Newsletter Routes', () => {
         expect(res.body.users.length).to.equal(2)
     })
 
-    it('should find a newletter user by email', () => {
-
+    it('should find a newletter user by email', async () => {
+        const res  = await request(app).get('/newsletter/xavier@test.com')
+        console.log(res)
     })
 
     it('should update a newsletter user by email', () => {
