@@ -20,16 +20,35 @@ describe('Newsletter Routes', () => {
     const testDbUri: string = process.env.TEST_DB_URI!
 
     before(async () => {
-
         await connectToDatabase(testDbUri as string)
     })
 
     after(async () => {
-        console.log('after')
+        // Empty database
         await mongoose.disconnect()
     })
 
-    it('test', () => {
+    it('should add 2 newsletter users', () => {
         console.log('testing')
+    })
+
+    it('should return 2 newsletter users', () => {
+
+    })
+
+    it('should find a newletter user by email', () => {
+
+    })
+
+    it('should update a newsletter user by email', () => {
+
+    })
+
+    it('should update newsletter user by id', () => {
+
+    })
+
+    it('should delete a user by email', () => {
+
     })
 })
