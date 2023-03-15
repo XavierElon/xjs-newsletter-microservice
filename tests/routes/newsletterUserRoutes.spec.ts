@@ -26,7 +26,6 @@ describe('Newsletter Routes 200 + 400 status codes', () => {
     const testDbUri: string = process.env.TEST_DB_URI!
 
     before(async () => {
-        // NewsletterUser.deleteMany({})
         await connectToDatabase(testDbUri as string)
     })
 
@@ -139,6 +138,7 @@ describe('Newsletter User Routes 500 status codes', () => {
     const badEmail: string = 'achilles@gmail'
     const validEmail: string = 'xavier@test.com'
     const testDbUri: string = process.env.TEST_DB_URI!
+    
     before(async () => {
         await connectToDatabase(testDbUri as string)
         await request(app).post('/newsletter').send(NewsletterUserMocks[0])
