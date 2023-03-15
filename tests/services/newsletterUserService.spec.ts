@@ -33,16 +33,20 @@ describe('Newsletter User Services Suite', () => {
         })
         await mongoose.disconnect()
     })
+    
+    it('should create a newsletter user', async () => {
+        const res = await createNewsletterUser(NewsletterUserMocks[0])
+        await createNewsletterUser(NewsletterUserMocks[1])
+        expect(res.email).to.equal(userEmail)
+    })
 
     it('should return all newsletter users (2)', async () => {
-
+        const res = await getAllNewsletterUsers()
+        console.log(res)
+        expect(res.length).to.equal(2)
     })
 
     it('should return a single user by email', async () => {
-
-    })
-
-    it('should create a newsletter user', async () => {
 
     })
 

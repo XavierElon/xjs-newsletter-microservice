@@ -21,6 +21,4 @@ const newsletterUserSchema = new mongoose.Schema({
   date: { type: Date, default: Date.now }
 })
 
-export const NewsletterUser = mongoose.model('NewsletterUser', newsletterUserSchema);
-
-
+export const NewsletterUser = mongoose.model('NewsletterUser', newsletterUserSchema)
