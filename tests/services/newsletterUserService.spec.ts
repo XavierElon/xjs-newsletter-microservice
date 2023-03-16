@@ -7,14 +7,14 @@ import express, { Express, Response } from 'express'
 import { ObjectId } from 'mongoose'
 import { connectToDatabase } from '../../src/connections/mongodb'
 import { getAllNewsletterUsers, getNewsletterUserByEmail, createNewsletterUser, checkIfNewsletterUserExistsByEmail, checkIfNewsletterUserExistsById,
-            updateNewsletterUserByEmail, updateNewsletterUserById, deleteNewsletterUser } from '../../src/services/newsletterUser.service'
+            updateNewsletterUserByEmail, updateNewsletterUserById, deleteNewsletterUser, getNewsletterUserById } from '../../src/services/newsletterUser.service'
 import { NewsletterUser } from '../../src/models/newsletterUser.model'
 import { NewsletterUserMocks } from '../__mocks__/NewsletterUser.data'
 
 dotenv.config()
 
 describe('Newsletter User Services Suite', () => {
-    let userId: ObjectId
+    let userId: string
     let userEmail: string = 'xavier@test.com'
     const newEmail: string = 'elonmusk@gmail.com'
     const nonExistentEmail: string  = 'achillesflocka@gmail.com'
@@ -53,11 +53,13 @@ describe('Newsletter User Services Suite', () => {
     it('should return a single user by email', async () => {
         const res = await getNewsletterUserByEmail(userEmail)
         console.log(res)
+        userId = res._id
         expect(res.email).to.equal(userEmail)
     })
 
     it('should find a newsletter user by id', async () => {
-
+        const res = await getNewsletterUserById(userId)
+        expect(res._id.toString()).to.equal(userId.toString())
     })
 
     it('should update a newsletter user by email', async () => {

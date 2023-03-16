@@ -23,6 +23,16 @@ export const getNewsletterUserByEmail =  async (email: string): Promise<any| nul
   }
 }
 
+export const getNewsletterUserById =  async (id: string): Promise<any| null>  => {
+  try {
+    const User = await NewsletterUser.findById({ _id: id });
+    return User || null;
+  } catch (error) {
+    console.error(`Error while getting NewsletterUser by email: ${error}`);
+    return null;
+  }
+}
+
 /*
 CREATE NewsletterUser
 This function creates a new NewsletterUser using the NewsletterUserSchema and saves it to the database
