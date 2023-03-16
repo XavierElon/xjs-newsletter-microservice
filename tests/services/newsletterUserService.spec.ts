@@ -63,11 +63,12 @@ describe('Newsletter User Services Suite', () => {
     })
 
     it('should update a newsletter user by email', async () => {
-
+        const res = await updateNewsletterUserByEmail(userEmail, { email: newEmail })
+        expect(res.email).to.equal(newEmail)
     })
 
     it('should update a newsletter user by id', async () => {
-
+        
     })
 
     it('should delete a newsletter user by email', async () => {
