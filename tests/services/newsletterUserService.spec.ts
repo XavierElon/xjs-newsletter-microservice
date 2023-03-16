@@ -73,7 +73,10 @@ describe('Newsletter User Services Suite', () => {
     })
 
     it('should delete a newsletter user by email', async () => {
-        
+        await deleteNewsletterUser(newEmail)
+        const result = await getAllNewsletterUsers()
+        expect(result.length).to.equal(1)
+        expect(result[0].email).to.not.equal(newEmail)
     })
 
 
