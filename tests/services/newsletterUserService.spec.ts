@@ -11,8 +11,10 @@ dotenv.config()
 
 describe('Newsletter User Services Suite', () => {
     let userId: string
+    const badUserId = new mongoose.Types.ObjectId()
     let userEmail: string = 'xavier@test.com'
     const newEmail: string = 'elonmusk@gmail.com'
+    const nonExistentEmail: string  = 'achillesflocka@gmail.com'
     const testDbUri: string = process.env.TEST_DB_URI!
 
     before(async () => {
@@ -56,7 +58,18 @@ describe('Newsletter User Services Suite', () => {
     })
 
     it('should check to see if user exists by email and return false', async () => {
-        
+        const res: boolean = await checkIfNewsletterUserExistsByEmail(nonExistentEmail)
+        expect(res).to.equal(false)
+    })
+
+    it('should check to see if user exists by id and return true', async () => {
+        const res: boolean = await checkIfNewsletterUserExistsById(userId)
+        expect(res).to.equal(true)
+    })
+
+    it('should check to see if user exists by id and return false', async () => {
+        const res: boolean = await checkIfNewsletterUserExistsById(badUserId.toString())
+        expect(res).to.equal(false)
     })
 
     it('should find a newsletter user by id', async () => {
