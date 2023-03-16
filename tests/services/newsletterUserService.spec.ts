@@ -50,6 +50,15 @@ describe('Newsletter User Services Suite', () => {
         expect(res.email).to.equal(userEmail)
     })
 
+    it('should check to see if user exists by email and return true', async () => {
+        const res: boolean = await checkIfNewsletterUserExistsByEmail(userEmail)
+        expect(res).to.equal(true)
+    })
+
+    it('should check to see if user exists by email and return false', async () => {
+        
+    })
+
     it('should find a newsletter user by id', async () => {
         const res = await getNewsletterUserById(userId)
         expect(res._id.toString()).to.equal(userId.toString())
