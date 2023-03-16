@@ -35,8 +35,8 @@ export const createNewsletterUser = async (NewsletterUserData: any): Promise<any
       return Promise.resolve(result)
     })
     .catch((error: any) => {
-      console.log('Error creating NewsletterUser: ', error)
-      throw new Error('bad data')
+      // console.log('Error creating NewsletterUser: ', error)
+      throw new Error('Malformed data')
     })
 }
 
