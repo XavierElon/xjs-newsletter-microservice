@@ -91,7 +91,7 @@ export const updateNewsletterUserByEmail = async (email: string, update: Partial
 /*
 UPDATE NewsletterUser INFORMATION
 */
-export const updateNewsletterUserById = async (id: string, update: Partial<typeof NewsletterUser>): Promise<any | null> => {
+export const updateNewsletterUserById = async (id: string, update: Partial<any>): Promise<any | null> => {
   // const NewsletterUserModel: Model<Document & typeof NewsletterUser> = mongoose.model('NewsletterUser');
   try {
     const updatedNewsletterUser = await NewsletterUser.findOneAndUpdate({ _id: id }, update, { new: true });
