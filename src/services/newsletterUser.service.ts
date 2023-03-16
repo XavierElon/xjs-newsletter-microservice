@@ -94,7 +94,7 @@ UPDATE NewsletterUser INFORMATION
 export const updateNewsletterUserById = async (id: string, update: Partial<any>): Promise<any | null> => {
   // const NewsletterUserModel: Model<Document & typeof NewsletterUser> = mongoose.model('NewsletterUser');
   try {
-    const updatedNewsletterUser = await NewsletterUser.findOneAndUpdate({ _id: id }, update, { new: true });
+    const updatedNewsletterUser = await NewsletterUser.findOneAndUpdate({ _id: id }, { ...update, date: Date.now() }, { new: true });
     return updatedNewsletterUser;
   } catch (error) {
     console.error(`Error updating NewsletterUser: ${error}`);
@@ -103,12 +103,26 @@ export const updateNewsletterUserById = async (id: string, update: Partial<any>)
 };
 
 /*
-DELETE NewsletterUser
+DELETE NewsletterUser by email
 */
-export const deleteNewsletterUser = async (email: string): Promise<any | null> => {
+export const deleteNewsletterUserByEmail = async (email: string): Promise<any | null> => {
 
   try {
     const deletedNewsletterUser = await NewsletterUser.findOneAndDelete({ email });
+    return deletedNewsletterUser;
+  } catch (err) {
+    console.error(err);
+    throw new Error('Bad data')
+  }
+}
+
+/*
+DELETE NewsletterUser by id
+*/
+export const deleteNewsletterUserById = async (id: string): Promise<any | null> => {
+
+  try {
+    const deletedNewsletterUser = await NewsletterUser.findOneAndDelete({ _id: id });
     return deletedNewsletterUser;
   } catch (err) {
     console.error(err);

@@ -1,13 +1,9 @@
 import { expect } from 'chai'
 import mongoose, { Model } from 'mongoose'
-import request from 'supertest'
-import sinon from 'sinon'
 import dotenv from 'dotenv'
-import express, { Express, Response } from 'express'
-import { ObjectId } from 'mongoose'
 import { connectToDatabase } from '../../src/connections/mongodb'
 import { getAllNewsletterUsers, getNewsletterUserByEmail, createNewsletterUser, checkIfNewsletterUserExistsByEmail, checkIfNewsletterUserExistsById,
-            updateNewsletterUserByEmail, updateNewsletterUserById, deleteNewsletterUser, getNewsletterUserById } from '../../src/services/newsletterUser.service'
+            updateNewsletterUserByEmail, updateNewsletterUserById, getNewsletterUserById, deleteNewsletterUserById, deleteNewsletterUserByEmail } from '../../src/services/newsletterUser.service'
 import { NewsletterUser } from '../../src/models/newsletterUser.model'
 import { NewsletterUserMocks } from '../__mocks__/NewsletterUser.data'
 
@@ -17,9 +13,6 @@ describe('Newsletter User Services Suite', () => {
     let userId: string
     let userEmail: string = 'xavier@test.com'
     const newEmail: string = 'elonmusk@gmail.com'
-    const nonExistentEmail: string  = 'achillesflocka@gmail.com'
-    const existingEmail: string = 'achilles@gmail.com'
-    const invalidEmail: string = 'achillesflocka@gmail'
     const testDbUri: string = process.env.TEST_DB_URI!
 
     before(async () => {
@@ -73,11 +66,17 @@ describe('Newsletter User Services Suite', () => {
     })
 
     it('should delete a newsletter user by email', async () => {
-        await deleteNewsletterUser(newEmail)
+        await deleteNewsletterUserByEmail(newEmail)
         const result = await getAllNewsletterUsers()
         expect(result.length).to.equal(1)
+        userId = result[0]._id
         expect(result[0].email).to.not.equal(newEmail)
     })
 
+    it('should delete a newsletter user by id', async () => {
+        await deleteNewsletterUserById(userId)
+        const result = await getAllNewsletterUsers()
+        expect(result.length).to.equal(0)
+    })
 
 })

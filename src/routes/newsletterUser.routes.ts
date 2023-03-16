@@ -1,6 +1,6 @@
 import express, { Request, Response, Router } from 'express'
 import { ObjectId } from 'mongoose'
-import { checkIfNewsletterUserExistsByEmail, checkIfNewsletterUserExistsById, createNewsletterUser, deleteNewsletterUser, getAllNewsletterUsers, getNewsletterUserByEmail, updateNewsletterUserByEmail, updateNewsletterUserById } from '../services/newsletterUser.service'
+import { checkIfNewsletterUserExistsByEmail, checkIfNewsletterUserExistsById, createNewsletterUser, deleteNewsletterUserByEmail, getAllNewsletterUsers, getNewsletterUserByEmail, updateNewsletterUserByEmail, updateNewsletterUserById } from '../services/newsletterUser.service'
 import { validateEmail } from '../utils/verification.helper'
 import { ErrorMessage } from '../structures/types'
 import { NewsletterUser } from '../models/newsletterUser.model'
@@ -119,7 +119,7 @@ newsletterRouter.delete('/newsletter/:email', async (req: Request, res: Response
         res.status(422).json({ message: errorMessage.email })
     } else if (userExists) {
         try {
-            const result = await deleteNewsletterUser(email)
+            const result = await deleteNewsletterUserByEmail(email)
             console.log(`Email ${result} succesfully deleted from database`)
             res.status(200).json({ message: `Email ${result} successfully deleted`})
         } catch (error) {
