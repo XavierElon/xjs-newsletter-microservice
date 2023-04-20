@@ -3,9 +3,7 @@ import { checkIfNewsletterUserExistsByEmail, checkIfNewsletterUserExistsById, cr
 import { validateEmail } from '../utils/verification.helper'
 import { ErrorMessage } from '../structures/types'
 import { NewsletterUser } from '../models/newsletterUser.model'
-import { CreateNewsletterUser, DeleteNewsletterUserByEmail, GetAllNewsletterUsers, GetNewsletterUserByEmail, PatchNewsletterUserByEmail, PatchNewsletterUserById } from '../controllers/newsletterUser.controller'
-
-const errorMessage = new ErrorMessage()
+import { CreateNewsletterUser, DeleteNewsletterUserByEmail, DeleteNewsletterUserById, GetAllNewsletterUsers, GetNewsletterUserByEmail, PatchNewsletterUserByEmail, PatchNewsletterUserById } from '../controllers/newsletterUser.controller'
 
 export const newsletterRouter: Router = express.Router()
 
@@ -24,5 +22,8 @@ newsletterRouter.patch('/newsletter/:email', PatchNewsletterUserByEmail)
 // Patch Newsletter User by id
 newsletterRouter.patch('/newsletter/update/:id', PatchNewsletterUserById)
 
-// Delete Newsletter User
+// Delete Newsletter User by email
 newsletterRouter.delete('/newsletter/:email', DeleteNewsletterUserByEmail)
+
+// Delete Newsletter User by id
+newsletterRouter.delete('/newsletter/:id', DeleteNewsletterUserById)

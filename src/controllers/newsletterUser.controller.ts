@@ -122,3 +122,7 @@ export const DeleteNewsletterUserByEmail = async (req: Request, res: Response) =
         res.status(404).json({ message: `${email} does not exist in database`})
     }
 }
+
+export const DeleteNewsletterUserById = async (req: Request, res: Response) => {
+    console.log('test')
+}
