@@ -82,3 +82,21 @@ export const PatchNewsletterUserByEmail = async (req: Request, res: Response) =>
         res.status(404).json({ message: `${email} does not exist in database`})
     }
 }
+
+export const PatchNewsletterUserById = async (req: Request, res: Response) => {
+    const id = req.params.id
+    const userExists: boolean = await checkIfNewsletterUserExistsById(id)
+
+    if (userExists) {
+        try {
+            const updatedUser = await updateNewsletterUserById(id, req.body)
+            console.log(`User updated: ${updatedUser}`)
+            res.status(200).send({ message: `User with id ${id} updated`, result: updatedUser})
+        } catch (error) {
+            console.error(`Error updating user with id ${id}: ${error}`)
+        }
+    } else {
+        console.log(`User with ${id} does not exist`)
+        res.status(404).json({ message: `User with ${id} does not exist in database`})
+    }
+}

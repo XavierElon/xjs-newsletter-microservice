@@ -3,7 +3,7 @@ import { checkIfNewsletterUserExistsByEmail, checkIfNewsletterUserExistsById, cr
 import { validateEmail } from '../utils/verification.helper'
 import { ErrorMessage } from '../structures/types'
 import { NewsletterUser } from '../models/newsletterUser.model'
-import { CreateNewsletterUser, GetAllNewsletterUsers, GetNewsletterUserByEmail, PatchNewsletterUserByEmail } from '../controllers/newsletterUser.controller'
+import { CreateNewsletterUser, GetAllNewsletterUsers, GetNewsletterUserByEmail, PatchNewsletterUserByEmail, PatchNewsletterUserById } from '../controllers/newsletterUser.controller'
 
 const errorMessage = new ErrorMessage()
 
@@ -22,23 +22,7 @@ newsletterRouter.post('/newsletter', CreateNewsletterUser)
 newsletterRouter.patch('/newsletter/:email', PatchNewsletterUserByEmail)
 
 // Patch Newsletter User by id
-newsletterRouter.patch('/newsletter/update/:id', async (req: Request, res: Response) => {
-    const id = req.params.id
-    const userExists: boolean = await checkIfNewsletterUserExistsById(id)
-
-    if (userExists) {
-        try {
-            const updatedUser = await updateNewsletterUserById(id, req.body)
-            console.log(`User updated: ${updatedUser}`)
-            res.status(200).send({ message: `User with id ${id} updated`, result: updatedUser})
-        } catch (error) {
-            console.error(`Error updating user with id ${id}: ${error}`)
-        }
-    } else {
-        console.log(`User with ${id} does not exist`)
-        res.status(404).json({ message: `User with ${id} does not exist in database`})
-    }
-})
+newsletterRouter.patch('/newsletter/update/:id', PatchNewsletterUserById)
 
 // Delete Newsletter User
 newsletterRouter.delete('/newsletter/:email', async (req: Request, res: Response) => {
