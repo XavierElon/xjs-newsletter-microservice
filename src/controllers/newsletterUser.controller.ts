@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import { validateEmail } from '../utils/verification.helper'
 import { ErrorMessage } from '../structures/types'
 import { NewsletterUser } from '../models/newsletterUser.model'
-import { checkIfNewsletterUserExistsByEmail, checkIfNewsletterUserExistsById, createNewsletterUser, deleteNewsletterUserByEmail, getAllNewsletterUsers, getNewsletterUserByEmail, updateNewsletterUserByEmail, updateNewsletterUserById } from '../services/newsletterUser.service'
+import { checkIfNewsletterUserExistsByEmail, checkIfNewsletterUserExistsById, createNewsletterUser, deleteNewsletterUserByEmail, deleteNewsletterUserById, getAllNewsletterUsers, getNewsletterUserByEmail, updateNewsletterUserByEmail, updateNewsletterUserById } from '../services/newsletterUser.service'
 
 const errorMessage = new ErrorMessage()
 
@@ -124,5 +124,19 @@ export const DeleteNewsletterUserByEmail = async (req: Request, res: Response) =
 }
 
 export const DeleteNewsletterUserById = async (req: Request, res: Response) => {
-    console.log('test')
+    const id = req.params.id
+    const userExists: boolean = await checkIfNewsletterUserExistsById(id)
+
+    if (userExists) {
+        try {
+            const result = await deleteNewsletterUserById(id)
+            console.log(`${id} succesfully deleted from database`)
+            res.status(200).send({ message: `${id} successfully deleted.`})
+        } catch (error) {
+            console.error(`Error updating user with id ${id}: ${error}`)
+        }
+    } else {
+        console.log(`User with ${id} does not exist`)
+        res.status(404).json({ message: `User with ${id} does not exist in database`})
+    }
 }
