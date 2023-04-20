@@ -100,3 +100,25 @@ export const PatchNewsletterUserById = async (req: Request, res: Response) => {
         res.status(404).json({ message: `User with ${id} does not exist in database`})
     }
 }
+
+export const DeleteNewsletterUserByEmail = async (req: Request, res: Response) => {
+    const email: string = req.params.email
+    const isValidEmail: boolean= validateEmail(email)
+    const userExists: boolean = await checkIfNewsletterUserExistsByEmail(email)
+
+    if (!isValidEmail) {
+        res.status(422).json({ message: errorMessage.email })
+    } else if (userExists) {
+        try {
+            const result = await deleteNewsletterUserByEmail(email)
+            console.log(`Email ${result} succesfully deleted from database`)
+            res.status(200).json({ message: `Email ${result} successfully deleted`})
+        } catch (error) {
+            console.log(`Error deleteing ${email}: ${error}`)
+            res.status(500).json({ message: `Error deleting ${email}`, error})
+        }
+    } else {
+        console.log(`Email ${email} does not exist`)
+        res.status(404).json({ message: `${email} does not exist in database`})
+    }
+}
