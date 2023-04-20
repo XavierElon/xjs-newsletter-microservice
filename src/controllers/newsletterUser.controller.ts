@@ -37,3 +37,25 @@ export const GetNewsletterUserByEmail = async (req: Request, res: Response) => {
         res.status(404).json({ message: `${email} does not exist in database`})
     }
 }
+
+export const CreateNewsLetterUser = async (req: Request, res: Response) => {
+    const userData: typeof NewsletterUser = req.body
+    const email: string = req.body.email
+    const emailIsValid: boolean = (email != null) ? validateEmail(email) : true
+    const userExists: boolean = await checkIfNewsletterUserExistsByEmail(email)
+
+    if (!emailIsValid) {
+        res.status(422).json({ mesage: errorMessage.email})
+    } else if (userExists) {
+        console.error(`${email} already exists.`)
+        res.status(400).json({ message: `${email} already exists` })
+    } else {
+        try {
+            const result = await createNewsletterUser(userData)
+            res.status(201).json({ message: 'User created', data: userData })
+        } catch (error) {
+            console.log('Error creating user: ', error)
+            res.status(500).json({ message: 'Error creating user', error })
+        }
+    }
+}

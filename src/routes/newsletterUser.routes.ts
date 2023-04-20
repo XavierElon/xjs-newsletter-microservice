@@ -3,7 +3,7 @@ import { checkIfNewsletterUserExistsByEmail, checkIfNewsletterUserExistsById, cr
 import { validateEmail } from '../utils/verification.helper'
 import { ErrorMessage } from '../structures/types'
 import { NewsletterUser } from '../models/newsletterUser.model'
-import { GetAllNewsletterUsers, GetNewsletterUserByEmail } from '../controllers/newsletterUser.controller'
+import { CreateNewsLetterUser, GetAllNewsletterUsers, GetNewsletterUserByEmail } from '../controllers/newsletterUser.controller'
 
 const errorMessage = new ErrorMessage()
 
@@ -16,27 +16,7 @@ newsletterRouter.get('/newsletter', GetAllNewsletterUsers)
 newsletterRouter.get('/newsletter/:email', GetNewsletterUserByEmail)
 
 // Create a User
-newsletterRouter.post('/newsletter', async (req: Request, res: Response) => {
-    const userData: typeof NewsletterUser = req.body
-    const email: string = req.body.email
-    const emailIsValid: boolean = (email != null) ? validateEmail(email) : true
-    const userExists: boolean = await checkIfNewsletterUserExistsByEmail(email)
-
-    if (!emailIsValid) {
-        res.status(422).json({ mesage: errorMessage.email})
-    } else if (userExists) {
-        console.error(`${email} already exists.`)
-        res.status(400).json({ message: `${email} already exists` })
-    } else {
-        try {
-            const result = await createNewsletterUser(userData)
-            res.status(201).json({ message: 'User created', data: userData })
-        } catch (error) {
-            console.log('Error creating user: ', error)
-            res.status(500).json({ message: 'Error creating user', error })
-        }
-    }
-})
+newsletterRouter.post('/newsletter', CreateNewsLetterUser)
 
 // Patch Newsletter User by email
 newsletterRouter.patch('/newsletter/:email', async (req: Request, res: Response) => {
