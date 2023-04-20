@@ -3,7 +3,7 @@ import { checkIfNewsletterUserExistsByEmail, checkIfNewsletterUserExistsById, cr
 import { validateEmail } from '../utils/verification.helper'
 import { ErrorMessage } from '../structures/types'
 import { NewsletterUser } from '../models/newsletterUser.model'
-import { CreateNewsLetterUser, GetAllNewsletterUsers, GetNewsletterUserByEmail } from '../controllers/newsletterUser.controller'
+import { CreateNewsletterUser, GetAllNewsletterUsers, GetNewsletterUserByEmail, PatchNewsletterUserByEmail } from '../controllers/newsletterUser.controller'
 
 const errorMessage = new ErrorMessage()
 
@@ -16,31 +16,10 @@ newsletterRouter.get('/newsletter', GetAllNewsletterUsers)
 newsletterRouter.get('/newsletter/:email', GetNewsletterUserByEmail)
 
 // Create a User
-newsletterRouter.post('/newsletter', CreateNewsLetterUser)
+newsletterRouter.post('/newsletter', CreateNewsletterUser)
 
 // Patch Newsletter User by email
-newsletterRouter.patch('/newsletter/:email', async (req: Request, res: Response) => {
-    const email: string = req.params.email
-    const newEmail: string | null = (req.body.email != null) ? req.body.email : null
-    const emailIsValid: boolean = (newEmail != null) ? validateEmail(newEmail) : true
-    const userExists: boolean = await checkIfNewsletterUserExistsByEmail(email)
-    
-    if(!emailIsValid) {
-        res.status(422).json({ message: errorMessage.email })
-    } else if (userExists) {
-        try {
-            const updatedUser = await updateNewsletterUserByEmail(email, req.body)
-            console.log(`User updated: ${updatedUser}`)
-            res.status(200).send({ message: 'User updated', result: updatedUser })
-        } catch (error) {
-            console.error(`Error updating ${email}: ${error}`)
-            return res.status(500).send({ error: `Server error: ${error}`})
-        }
-    } else {
-        console.log(`Email ${email} does not exist`)
-        res.status(404).json({ message: `${email} does not exist in database`})
-    }
-})
+newsletterRouter.patch('/newsletter/:email', PatchNewsletterUserByEmail)
 
 // Patch Newsletter User by id
 newsletterRouter.patch('/newsletter/update/:id', async (req: Request, res: Response) => {

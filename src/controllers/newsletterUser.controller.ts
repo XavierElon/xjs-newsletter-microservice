@@ -38,7 +38,7 @@ export const GetNewsletterUserByEmail = async (req: Request, res: Response) => {
     }
 }
 
-export const CreateNewsLetterUser = async (req: Request, res: Response) => {
+export const CreateNewsletterUser = async (req: Request, res: Response) => {
     const userData: typeof NewsletterUser = req.body
     const email: string = req.body.email
     const emailIsValid: boolean = (email != null) ? validateEmail(email) : true
@@ -57,5 +57,28 @@ export const CreateNewsLetterUser = async (req: Request, res: Response) => {
             console.log('Error creating user: ', error)
             res.status(500).json({ message: 'Error creating user', error })
         }
+    }
+}
+
+export const PatchNewsletterUserByEmail = async (req: Request, res: Response) => {
+    const email: string = req.params.email
+    const newEmail: string | null = (req.body.email != null) ? req.body.email : null
+    const emailIsValid: boolean = (newEmail != null) ? validateEmail(newEmail) : true
+    const userExists: boolean = await checkIfNewsletterUserExistsByEmail(email)
+    
+    if(!emailIsValid) {
+        res.status(422).json({ message: errorMessage.email })
+    } else if (userExists) {
+        try {
+            const updatedUser = await updateNewsletterUserByEmail(email, req.body)
+            console.log(`User updated: ${updatedUser}`)
+            res.status(200).send({ message: 'User updated', result: updatedUser })
+        } catch (error) {
+            console.error(`Error updating ${email}: ${error}`)
+            return res.status(500).send({ error: `Server error: ${error}`})
+        }
+    } else {
+        console.log(`Email ${email} does not exist`)
+        res.status(404).json({ message: `${email} does not exist in database`})
     }
 }
