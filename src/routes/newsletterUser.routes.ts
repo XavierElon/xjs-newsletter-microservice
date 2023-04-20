@@ -4,21 +4,14 @@ import { checkIfNewsletterUserExistsByEmail, checkIfNewsletterUserExistsById, cr
 import { validateEmail } from '../utils/verification.helper'
 import { ErrorMessage } from '../structures/types'
 import { NewsletterUser } from '../models/newsletterUser.model'
+import { GetAllNewsletterUsers } from '../controllers/newsletterUser.controller'
 
 const errorMessage = new ErrorMessage()
 
 export const newsletterRouter: Router = express.Router()
 
 // Get all Newsletter Users
-newsletterRouter.get('/newsletter', async (req: Request, res: Response) => {
-    try {
-        const result = await getAllNewsletterUsers()
-        res.status(200).json({ users: result })
-    } catch (error) {
-        console.log(`Error retrieving all users: ${error}`)
-        res.status(500).json({ message: 'Error getting users', error})
-    }
-})
+newsletterRouter.get('/newsletter', GetAllNewsletterUsers)
 
 // Get Newsletter User by email
 newsletterRouter.get('/newsletter/:email', async (req: Request, res: Response) => {
