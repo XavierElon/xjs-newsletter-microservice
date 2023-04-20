@@ -1,10 +1,9 @@
 import express, { Request, Response, Router } from 'express'
-import { ObjectId } from 'mongoose'
 import { checkIfNewsletterUserExistsByEmail, checkIfNewsletterUserExistsById, createNewsletterUser, deleteNewsletterUserByEmail, getAllNewsletterUsers, getNewsletterUserByEmail, updateNewsletterUserByEmail, updateNewsletterUserById } from '../services/newsletterUser.service'
 import { validateEmail } from '../utils/verification.helper'
 import { ErrorMessage } from '../structures/types'
 import { NewsletterUser } from '../models/newsletterUser.model'
-import { GetAllNewsletterUsers } from '../controllers/newsletterUser.controller'
+import { GetAllNewsletterUsers, GetNewsletterUserByEmail } from '../controllers/newsletterUser.controller'
 
 const errorMessage = new ErrorMessage()
 
@@ -14,27 +13,7 @@ export const newsletterRouter: Router = express.Router()
 newsletterRouter.get('/newsletter', GetAllNewsletterUsers)
 
 // Get Newsletter User by email
-newsletterRouter.get('/newsletter/:email', async (req: Request, res: Response) => {
-    const email: string = req.params.email
-    
-    const userExists: boolean = await checkIfNewsletterUserExistsByEmail(email)
-    const emailIsValid: boolean = validateEmail(email)
-    if(!emailIsValid) {
-        res.status(422).json({ message: errorMessage.email })
-    }
-    else if (userExists) {
-        try {
-            const user = await getNewsletterUserByEmail(email)
-            res.status(200).json({ user: user})
-        } catch (error) {
-            console.log(`Error retrieving user ${error}`)
-            res.status(500).json({ message: `Error retrieving ${email}`, error})
-        }
-    } else {
-        console.log(`Email ${email} does not exist`)
-        res.status(404).json({ message: `${email} does not exist in database`})
-    }
-})
+newsletterRouter.get('/newsletter/:email', GetNewsletterUserByEmail)
 
 // Create a User
 newsletterRouter.post('/newsletter', async (req: Request, res: Response) => {
