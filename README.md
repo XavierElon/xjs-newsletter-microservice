@@ -8,4 +8,4 @@ Run: <br/>
 <p>Install node modules</p>
 <code>npm install</code>
 <P><b>To start server: </b></p>
-```npm run dev```
+<code>npm run dev</code>
