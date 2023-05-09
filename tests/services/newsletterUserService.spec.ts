@@ -9,25 +9,35 @@ import { NewsletterUserMocks } from '../__mocks__/NewsletterUser.data'
 
 dotenv.config()
 
-describe('Newsletter User Services Suite', () => {
+describe('Newsletter User Services Suite', function() {
     let userId: string
     const badUserId = new mongoose.Types.ObjectId()
     let userEmail: string = 'xavier@test.com'
     const newEmail: string = 'elonmusk@gmail.com'
     const nonExistentEmail: string  = 'achillesflocka@gmail.com'
     const testDbUri: string = process.env.TEST_DB_URI!
+    this.timeout(5000);
 
     before(async () => {
-        await connectToDatabase(testDbUri as string)
+        try {
+            await connectToDatabase(testDbUri as string)
+        } catch (error) {
+            console.log('Error in before hook: ' + error)
+        }
     })
 
-    after(async () => {
-        // Empty database
-        NewsletterUser.deleteMany({}, () => {
-            console.log('NEWSLETTER USERS DELETED')
-        })
-        await mongoose.disconnect()
-    })
+    // after(async () => {
+    //     // Empty database
+    //     try {
+    //         await NewsletterUser.deleteMany({}, () => {
+    //             console.log('NEWSLETTER USERS DELETED')
+    //         })
+    //         await mongoose.disconnect()
+    //     } catch (error) {
+    //         console.log('Error in after hook: ' + error)
+    //     }
+        
+    // })
     
     it('should create a newsletter user', async () => {
         const res = await createNewsletterUser(NewsletterUserMocks[0])

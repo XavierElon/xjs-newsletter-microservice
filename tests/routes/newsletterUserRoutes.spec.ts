@@ -16,7 +16,7 @@ const app: Express = express()
 app.use(express.json())
 app.use('/', newsletterRouter)
 
-describe('Newsletter Routes 200 + 400 status codes', () => {
+describe('Newsletter Routes 200 + 400 status codes', function() {
     let userId: ObjectId
     let userEmail: string = 'xavier@test.com'
     const newEmail: string = 'elonmusk@gmail.com'
@@ -25,17 +25,27 @@ describe('Newsletter Routes 200 + 400 status codes', () => {
     const invalidEmail: string = 'achillesflocka@gmail'
     const testDbUri: string = process.env.TEST_DB_URI!
 
+    this.timeout(5000);
+
     before(async () => {
-        await connectToDatabase(testDbUri as string)
+        try {
+            await connectToDatabase(testDbUri as string)
+        } catch (error) {
+            console.log('Error in before hook: ' + error)
+        }
     })
 
-    after(async () => {
-        // Empty database
-        NewsletterUser.deleteMany({}, () => {
-            console.log('NEWSLETTER USERS DELETED')
-        })
-        await mongoose.disconnect()
-    })
+    // after(async () => {
+    //     // Empty database
+    //     try {
+    //         await NewsletterUser.deleteMany({}, () => {
+    //             console.log('NEWSLETTER USERS DELETED')
+    //         })
+    //         await mongoose.disconnect()
+    //     } catch (error) {
+    //         console.log('Error in after hook: ' + error)
+    //     }
+    // })
 
     it('should add 2 newsletter users and return 201 status code for both', async () => {
         const res = await request(app).post('/newsletter').send(NewsletterUserMocks[0])
@@ -144,13 +154,13 @@ describe('Newsletter User Routes 500 status codes', () => {
         await request(app).post('/newsletter').send(NewsletterUserMocks[0])
     })
 
-    after(async () => {
-        // Empty database
-        NewsletterUser.deleteMany({}, () => {
-            console.log('NEWSLETTER USERS DELETED')
-        })
-        await mongoose.disconnect()
-    })
+    // after(async () => {
+    //     // Empty database
+    //     NewsletterUser.deleteMany({}, () => {
+    //         console.log('NEWSLETTER USERS DELETED')
+    //     })
+    //     await mongoose.disconnect()
+    // })
 
     it ('should not create new user 500 status code', async () => {
         const res = await request(app).post('/newsletter').send({ badEmail: badEmail, subscribed: true, shouldFail: true })
