@@ -3,12 +3,13 @@ import mongoose, { Model } from 'mongoose'
 import request from 'supertest'
 import sinon from 'sinon'
 import dotenv from 'dotenv'
-import express, { Express, Response } from 'express'
+import express, { Express, Request, Response } from 'express'
 import { ObjectId } from 'mongoose'
 import { connectToDatabase } from '../../src/connections/mongodb'
 import { newsletterRouter } from '../../src/routes/newsletterUser.routes'
 import { NewsletterUser } from '../../src/models/newsletterUser.model'
 import { NewsletterUserMocks } from '../__mocks__/NewsletterUser.data'
+import * as newsletterUserService from '../../src/services/newsletterUser.service'
 
 dotenv.config()
 
@@ -140,29 +141,37 @@ describe('Newsletter Routes 200 + 400 status codes', function() {
         const res = await request(app).delete(`/newsletter/${nonExistentEmail}`)
         expect(res.status).to.equal(404)
     })
+
 })
 
-// describe('Newsletter User Routes 500 status codes', () => {
-//     let userId
-//     const badEmail: string = 'achilles@gmail'
-//     const validEmail: string = 'xavier@test.com'
-//     const testDbUri: string = process.env.TEST_DB_URI!
+
+
+describe('GetAllNewsletterUsers Service 500 errors', function() {
+    const testDbUri: string = process.env.TEST_DB_URI!
+    this.timeout(5000)
     
-//     before(async () => {
-//         await connectToDatabase(testDbUri as string)
-//         await request(app).post('/newsletter').send(NewsletterUserMocks[0])
-//     })
-
-//     // after(async () => {
-//     //     // Empty database
-//     //     NewsletterUser.deleteMany({}, () => {
-//     //         console.log('NEWSLETTER USERS DELETED')
-//     //     })
-//     //     await mongoose.disconnect()
-//     // })
-
-//     it ('should not create new user 500 status code', async () => {
-//         const res = await request(app).post('/newsletter').send({ badEmail: badEmail, subscribed: true, shouldFail: true })
-//         expect(res.status).to.equal(500)
-//     })
-// })
+    before(async () => {
+        try {
+            await connectToDatabase(testDbUri as string)
+        } catch (error) {
+            console.log('Error in before hook: ' + error)
+        }
+    })
+    afterEach(() => {
+        sinon.restore() // This will restore all stubs and spies after each test
+    });
+    
+    it('should return a 500 error', async () => {
+        // Create a stub that throws an error
+        const getAllNewsletterUsersStub = sinon.stub(newsletterUserService, 'getAllNewsletterUsers')
+        getAllNewsletterUsersStub.throws(new Error('Forced error'))
+    
+        // Use supertest to make a request to your Express app
+        const response = await request(app).get('/newsletter')
+    
+        // Assertions
+        expect(response.status).to.equal(500)
+        expect(response.body).to.equal('Error getting users')
+        // expect(response.body.error).to.be.ok
+        });
+})
