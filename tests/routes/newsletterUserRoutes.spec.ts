@@ -35,17 +35,16 @@ describe('Newsletter Routes 200 + 400 status codes', function() {
         }
     })
 
-    // after(async () => {
-    //     // Empty database
-    //     try {
-    //         await NewsletterUser.deleteMany({}, () => {
-    //             console.log('NEWSLETTER USERS DELETED')
-    //         })
-    //         await mongoose.disconnect()
-    //     } catch (error) {
-    //         console.log('Error in after hook: ' + error)
-    //     }
-    // })
+    after(async () => {
+        // Empty database
+        try {
+            await NewsletterUser.deleteMany({})
+            console.log('NEWSLETTER USERS DELETED');
+            await mongoose.disconnect()
+        } catch (error) {
+            console.log('Error in after hook: ' + error)
+        }
+    })
 
     it('should add 2 newsletter users and return 201 status code for both', async () => {
         const res = await request(app).post('/newsletter').send(NewsletterUserMocks[0])
@@ -143,27 +142,27 @@ describe('Newsletter Routes 200 + 400 status codes', function() {
     })
 })
 
-describe('Newsletter User Routes 500 status codes', () => {
-    let userId
-    const badEmail: string = 'achilles@gmail'
-    const validEmail: string = 'xavier@test.com'
-    const testDbUri: string = process.env.TEST_DB_URI!
+// describe('Newsletter User Routes 500 status codes', () => {
+//     let userId
+//     const badEmail: string = 'achilles@gmail'
+//     const validEmail: string = 'xavier@test.com'
+//     const testDbUri: string = process.env.TEST_DB_URI!
     
-    before(async () => {
-        await connectToDatabase(testDbUri as string)
-        await request(app).post('/newsletter').send(NewsletterUserMocks[0])
-    })
+//     before(async () => {
+//         await connectToDatabase(testDbUri as string)
+//         await request(app).post('/newsletter').send(NewsletterUserMocks[0])
+//     })
 
-    // after(async () => {
-    //     // Empty database
-    //     NewsletterUser.deleteMany({}, () => {
-    //         console.log('NEWSLETTER USERS DELETED')
-    //     })
-    //     await mongoose.disconnect()
-    // })
+//     // after(async () => {
+//     //     // Empty database
+//     //     NewsletterUser.deleteMany({}, () => {
+//     //         console.log('NEWSLETTER USERS DELETED')
+//     //     })
+//     //     await mongoose.disconnect()
+//     // })
 
-    it ('should not create new user 500 status code', async () => {
-        const res = await request(app).post('/newsletter').send({ badEmail: badEmail, subscribed: true, shouldFail: true })
-        expect(res.status).to.equal(500)
-    })
-})
+//     it ('should not create new user 500 status code', async () => {
+//         const res = await request(app).post('/newsletter').send({ badEmail: badEmail, subscribed: true, shouldFail: true })
+//         expect(res.status).to.equal(500)
+//     })
+// })

@@ -26,18 +26,17 @@ describe('Newsletter User Services Suite', function() {
         }
     })
 
-    // after(async () => {
-    //     // Empty database
-    //     try {
-    //         await NewsletterUser.deleteMany({}, () => {
-    //             console.log('NEWSLETTER USERS DELETED')
-    //         })
-    //         await mongoose.disconnect()
-    //     } catch (error) {
-    //         console.log('Error in after hook: ' + error)
-    //     }
+    after(async () => {
+        // Empty database
+        try {
+            await NewsletterUser.deleteMany({})
+            console.log('NEWSLETTER USERS DELETED');
+            await mongoose.disconnect()
+        } catch (error) {
+            console.log('Error in after hook: ' + error)
+        }
         
-    // })
+    })
     
     it('should create a newsletter user', async () => {
         const res = await createNewsletterUser(NewsletterUserMocks[0])
@@ -45,11 +44,11 @@ describe('Newsletter User Services Suite', function() {
         expect(res.email).to.equal(userEmail)
     })
 
-    it('should not create a newsletter user', async () => {
-        // expect(await createNewsletterUser({ name: 'steve' })).to.throw('')
-    })
+    // it('should not create a newsletter user', async () => {
+    //     // expect(await createNewsletterUser({ name: 'steve' })).to.throw('')
+    // })
 
-    it('should return all newsletter users (2)', async () => {
+    it('should return all newsletter users (3)', async () => {
         const res = await getAllNewsletterUsers()
         console.log(res)
         expect(res.length).to.equal(2)
