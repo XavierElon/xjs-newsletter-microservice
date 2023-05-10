@@ -1,5 +1,9 @@
 {
     "extends": "@istanbuljs/nyc-config-typescript",
+    "require": [
+        "ts-node/register",
+        "source-map-support/register"
+    ],
     "check-coverage": true,
     "all": true,
     "include": [
@@ -18,5 +22,7 @@
     "statements": 0,
     "branches": 0,
     "functions": 0,
-    "lines": 0
+    "lines": 0,
+    "per-file": true,
+    "cache": false
 }

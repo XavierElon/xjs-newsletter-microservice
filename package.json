@@ -9,11 +9,11 @@
     "dev": "ts-node-dev ./index.ts",
     "build": "npx tsc",
     "start": "node dist/index.js",
-    "test": "mocha --require ts-node/register tests/**/*.spec.ts",
+    "test": "mocha --no-cache  --require ts-node/register tests/**/*.spec.ts",
     "test:coverage": "nyc npm run test",
     "test:controllers": "mocha --require ts-node/register tests/controllers/newsletterUserControllers.spec.ts",
     "test:routes": "mocha --require ts-node/register tests/routes/newsletterUserRoutes.spec.ts",
-    "test:services": "mocha --require ts-node/register tests/services/newsletterUserService.spec.ts",
+    "test:services": "nyc mocha --require ts-node/register tests/services/newsletterUserService.spec.ts",
     "lint": "yarn eslint .",
     "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write"
   },

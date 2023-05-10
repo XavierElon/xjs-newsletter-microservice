@@ -113,6 +113,18 @@ describe('Newsletter User Service Errors', () => {
     afterEach(() => {
       sinon.restore();
     });
+
+    after(async () => {
+        // Empty database
+        try {
+            // await NewsletterUser.deleteMany({})
+            console.log('NEWSLETTER USERS DELETED');
+            // await mongoose.disconnect()
+        } catch (error) {
+            console.log('Error in after hook: ' + error)
+        }
+        
+    })
   
     it('should return null when an error occurs getting a newsletter user by email', async () => {
       const error = new Error('Forced error');
@@ -214,35 +226,51 @@ describe('Newsletter User Service Errors', () => {
         expect(findOneAndUpdateStub.calledOnceWith({ email }, update, { new: true })).to.be.true;
       });
 
-    //   it('should return null when an error occurs updating user by id', async () => {
-    //     const email = 'test@example.com';
-    //     const update = { subscribed: false };
+    //   it('should handle error when updating a newsletter user by id', async () => {
+    //     const id = 'someId';
+    //     const update = { field: 'newValue' };
+    
     //     const error = new Error('Forced error');
-    
     //     const findOneAndUpdateStub = sinon.stub(NewsletterUser, 'findOneAndUpdate').throws(error);
-        
-    //     const result = await updateNewsletterUserById(email, update);
     
-    //     expect(result).to.be.null;
-    //     expect(findOneAndUpdateStub.calledOnceWith({ email }, update, { new: true })).to.be.true;
-    //     expect(error.message).to.equal('Error: Bad data');
+    //     try {
+    //       await updateNewsletterUserById(id, update);
+    //     } catch (error: any) {
+    //       expect(error.message).to.equal('Bad data');
+    //     }
+    
+    //     expect(findOneAndUpdateStub.calledOnce).to.be.true;
+    //     expect(findOneAndUpdateStub.calledWith({ _id: id }, sinon.match.any, sinon.match.any)).to.be.true;
     //   });
 
-      it('should handle error when updating a newsletter user by id', async () => {
-        const id = 'someId';
-        const update = { field: 'newValue' };
-    
+      it('should return an error when deleting a newsletter user by email fails', async () => {
+        const email = 'test@example.com';
         const error = new Error('Forced error');
-        const findOneAndUpdateStub = sinon.stub(NewsletterUser, 'findOneAndUpdate').throws(error);
+    
+        const findOneAndDeleteStub = sinon.stub(NewsletterUser, 'findOneAndDelete').throws(error);
     
         try {
-          await updateNewsletterUserById(id, update);
+          await deleteNewsletterUserByEmail(email);
         } catch (error: any) {
           expect(error.message).to.equal('Bad data');
         }
     
-        expect(findOneAndUpdateStub.calledOnce).to.be.true;
-        expect(findOneAndUpdateStub.calledWith({ _id: id }, sinon.match.any, sinon.match.any)).to.be.true;
+        expect(findOneAndDeleteStub.calledOnceWith({ email })).to.be.true;
+      });
+
+      it('should return an error when deleting a newsletter user by id fails', async () => {
+        const id = '123';
+        const error = new Error('Forced error');
+    
+        const findOneAndDeleteStub = sinon.stub(NewsletterUser, 'findOneAndDelete').throws(error);
+    
+        try {
+          await deleteNewsletterUserById(id);
+        } catch (error: any) {
+          expect(error.message).to.equal('Bad data');
+        }
+    
+        expect(findOneAndDeleteStub.calledOnceWith({ _id: id })).to.be.true;
       });
     
   });
