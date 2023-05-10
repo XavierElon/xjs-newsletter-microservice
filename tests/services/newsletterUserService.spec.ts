@@ -1,5 +1,6 @@
 import { expect } from 'chai'
 import mongoose, { Model } from 'mongoose'
+import sinon from 'sinon';
 import dotenv from 'dotenv'
 import { connectToDatabase } from '../../src/connections/mongodb'
 import { getAllNewsletterUsers, getNewsletterUserByEmail, createNewsletterUser, checkIfNewsletterUserExistsByEmail, checkIfNewsletterUserExistsById,
@@ -107,3 +108,79 @@ describe('Newsletter User Services Suite', function() {
     })
 
 })
+
+describe('Newsletter User Service Errors', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+  
+    it('should return null when an error occurs getting a newsletter user by email', async () => {
+      const error = new Error('Forced error');
+      const findOneStub = sinon.stub(NewsletterUser, 'findOne').throws(error);
+  
+      const email = 'test@example.com';
+      const result = await getNewsletterUserByEmail(email);
+  
+      expect(result).to.be.null;
+      expect(findOneStub.calledOnce).to.be.true;
+      expect(findOneStub.calledWith({ email })).to.be.true;
+    });
+
+    it('should return null when an error occurs getting a newsletter user by id', async () => {
+        const error = new Error('Forced error');
+        const findByIdStub = sinon.stub(NewsletterUser, 'findById').throws(error);
+    
+        const id = 'badid';
+        const result = await getNewsletterUserById(id);
+    
+        expect(result).to.be.null;
+        expect(findByIdStub.calledOnce).to.be.true;
+        expect(findByIdStub.calledWith(id)).to.be.true;
+      });
+
+      it('should return an error when saving a newsletter user fails', async () => {
+        // Create a fake newsletter user data object
+        const newsletterUserData = {
+          name: 'John Doe',
+          email: 'john.doe@example.com',
+        };
+    
+        // Stub the save method of the NewsletterUser instance to throw an error
+        const saveStub = sinon.stub(NewsletterUser.prototype, 'save');
+        saveStub.rejects(new Error('Forced error'));
+    
+        // Call the createNewsletterUser function with the fake data
+        try {
+          await createNewsletterUser(newsletterUserData);
+        } catch (error: any) {
+          // Make assertions
+          expect(error.message).to.equal('Malformed data');
+        }
+    
+        // Verify that the save method was called once
+        expect(saveStub.calledOnce).to.be.true;
+      });
+
+      it('should return false when seeing if a user exists by email', async () => {
+        // Create a fake newsletter user data object
+        const newsletterUserData = {
+          name: 'John Doe',
+          email: 'john.doe@example.com',
+        };
+    
+        // Stub the save method of the NewsletterUser instance to throw an error
+        const saveStub = sinon.stub(NewsletterUser.prototype, 'save');
+        saveStub.rejects(new Error('Forced error'));
+    
+        // Call the createNewsletterUser function with the fake data
+        try {
+          await createNewsletterUser(newsletterUserData);
+        } catch (error: any) {
+          // Make assertions
+          expect(error.message).to.equal('Malformed data');
+        }
+    
+        // Verify that the save method was called once
+        expect(saveStub.calledOnce).to.be.true;
+      });
+  });
