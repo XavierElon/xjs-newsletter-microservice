@@ -6,7 +6,7 @@ import { newsletterRouter } from './src/routes/newsletterUser.routes'
 
 dotenv.config()
 
-const app: Express = express()
+export const app: Express = express()
 const port: string = process.env.PORT || '420'
 const host: string = process.env.HOST || 'http://localhost:'
 const dbUri: string = process.env.MONGO_ATLAS_URI || ''

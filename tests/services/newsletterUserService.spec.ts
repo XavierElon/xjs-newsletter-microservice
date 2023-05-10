@@ -10,13 +10,15 @@ import { NewsletterUserMocks } from '../__mocks__/NewsletterUser.data'
 
 dotenv.config()
 
+const testDbUri: string = process.env.TEST_DB_URI!
+
 describe('Newsletter User Services Suite', function() {
     let userId: string
     const badUserId = new mongoose.Types.ObjectId()
     let userEmail: string = 'xavier@test.com'
     const newEmail: string = 'elonmusk@gmail.com'
     const nonExistentEmail: string  = 'achillesflocka@gmail.com'
-    const testDbUri: string = process.env.TEST_DB_URI!
+    
     this.timeout(5000);
 
     before(async () => {
@@ -114,17 +116,25 @@ describe('Newsletter User Service Errors', () => {
       sinon.restore();
     });
 
-    after(async () => {
-        // Empty database
-        try {
-            // await NewsletterUser.deleteMany({})
-            console.log('NEWSLETTER USERS DELETED');
-            // await mongoose.disconnect()
-        } catch (error) {
-            console.log('Error in after hook: ' + error)
-        }
+    // before(async () => {
+    //     try {
+    //         await connectToDatabase(testDbUri as string)
+    //     } catch (error) {
+    //         console.log('Error in before hook: ' + error)
+    //     }
+    // })
+
+    // after(async () => {
+    //     // Empty database
+    //     try {
+    //         // await NewsletterUser.deleteMany({})
+    //         console.log('NEWSLETTER USERS DELETED');
+    //         await mongoose.disconnect()
+    //     } catch (error) {
+    //         console.log('Error in after hook: ' + error)
+    //     }
         
-    })
+    // })
   
     it('should return null when an error occurs getting a newsletter user by email', async () => {
       const error = new Error('Forced error');
@@ -273,4 +283,4 @@ describe('Newsletter User Service Errors', () => {
         expect(findOneAndDeleteStub.calledOnceWith({ _id: id })).to.be.true;
       });
     
-  });
+});
