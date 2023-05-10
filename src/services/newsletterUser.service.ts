@@ -1,9 +1,7 @@
 import { NewsletterUser } from '../models/newsletterUser.model'
-import mongoose, { Model } from 'mongoose'
 
 // GET All newsletter users
 export const getAllNewsletterUsers = async (): Promise<any | null> => {
-  // const User: Model<Document & typeof NewsletterUser> = mongoose.model('NewsletterUser')
   try {
     const all = await NewsletterUser.find()
     return all
@@ -25,7 +23,7 @@ export const getNewsletterUserByEmail =  async (email: string): Promise<any| nul
 
 export const getNewsletterUserById =  async (id: string): Promise<any| null>  => {
   try {
-    const User = await NewsletterUser.findById({ _id: id });
+    const User = await NewsletterUser.findById(id);
     return User || null;
   } catch (error) {
     console.error(`Error while getting NewsletterUser by email: ${error}`);

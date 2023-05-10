@@ -12,7 +12,7 @@ export const GetAllNewsletterUsers = async (req: Request, res: Response) => {
         res.status(200).json({ users: result })
     } catch (error) {
         console.log(`Error retrieving all users: ${error}`)
-        res.status(500).json({ message: 'Error getting users', error})
+        res.status(500).json('Error getting users')
     }
 }
 
@@ -43,22 +43,17 @@ export const CreateNewsletterUser = async (req: Request, res: Response) => {
     const email: string = req.body.email
     const emailIsValid: boolean = (email != null) ? validateEmail(email) : true
     const userExists: boolean = await checkIfNewsletterUserExistsByEmail(email)
-
+  
     if (!emailIsValid) {
-        res.status(422).json({ mesage: errorMessage.email})
+      res.status(422).json({ message: errorMessage.email })
     } else if (userExists) {
-        console.error(`${email} already exists.`)
-        res.status(400).json({ message: `${email} already exists` })
+      console.error(`${email} already exists.`)
+      res.status(400).json({ message: `${email} already exists` })
     } else {
-        try {
-            const result = await createNewsletterUser(userData)
-            res.status(201).json({ message: 'User created', data: userData })
-        } catch (error) {
-            console.log('Error creating user: ', error)
-            res.status(500).json({ message: 'Error creating user', error })
-        }
+      const result = await createNewsletterUser(userData)
+      res.status(201).json({ message: 'User created', data: result })
     }
-}
+  }
 
 export const PatchNewsletterUserByEmail = async (req: Request, res: Response) => {
     const email: string = req.params.email
@@ -129,11 +124,11 @@ export const DeleteNewsletterUserById = async (req: Request, res: Response) => {
 
     if (userExists) {
         try {
-            const result = await deleteNewsletterUserById(id)
+            await deleteNewsletterUserById(id)
             console.log(`${id} succesfully deleted from database`)
             res.status(200).send({ message: `${id} successfully deleted.`})
         } catch (error) {
-            console.error(`Error updating user with id ${id}: ${error}`)
+            console.error(`Error updating user with id ${id}: ${error}`)''
         }
     } else {
         console.log(`User with ${id} does not exist`)
