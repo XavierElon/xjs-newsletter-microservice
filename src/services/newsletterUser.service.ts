@@ -1,9 +1,7 @@
 import { NewsletterUser } from '../models/newsletterUser.model'
-import mongoose, { Model } from 'mongoose'
 
 // GET All newsletter users
 export const getAllNewsletterUsers = async (): Promise<any | null> => {
-  // const User: Model<Document & typeof NewsletterUser> = mongoose.model('NewsletterUser')
   try {
     const all = await NewsletterUser.find()
     return all

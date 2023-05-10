@@ -183,4 +183,66 @@ describe('Newsletter User Service Errors', () => {
         // Verify that the save method was called once
         expect(saveStub.calledOnce).to.be.true;
       });
+
+      it('should return an error when retrieving all newsletter users fails', async () => {
+        // Stub the find method of the NewsletterUser model to throw an error
+        const findStub = sinon.stub(NewsletterUser, 'find');
+        findStub.throws(new Error('Forced error'));
+    
+        try {
+          // Call the getAllNewsletterUsers function
+          const result = await getAllNewsletterUsers();
+        } catch (error: any) {
+          // Make assertions
+          expect(error.message).to.equal('No users found');
+        }
+    
+        // Verify that the find method was called once
+        expect(findStub.calledOnce).to.be.true;
+      });
+
+      it('should return null when an error occurs updating user by email', async () => {
+        const email = 'test@example.com';
+        const update = { subscribed: false };
+        const error = new Error('Forced error');
+    
+        const findOneAndUpdateStub = sinon.stub(NewsletterUser, 'findOneAndUpdate').throws(error);
+    
+        const result = await updateNewsletterUserByEmail(email, update);
+    
+        expect(result).to.be.null;
+        expect(findOneAndUpdateStub.calledOnceWith({ email }, update, { new: true })).to.be.true;
+      });
+
+    //   it('should return null when an error occurs updating user by id', async () => {
+    //     const email = 'test@example.com';
+    //     const update = { subscribed: false };
+    //     const error = new Error('Forced error');
+    
+    //     const findOneAndUpdateStub = sinon.stub(NewsletterUser, 'findOneAndUpdate').throws(error);
+        
+    //     const result = await updateNewsletterUserById(email, update);
+    
+    //     expect(result).to.be.null;
+    //     expect(findOneAndUpdateStub.calledOnceWith({ email }, update, { new: true })).to.be.true;
+    //     expect(error.message).to.equal('Error: Bad data');
+    //   });
+
+      it('should handle error when updating a newsletter user by id', async () => {
+        const id = 'someId';
+        const update = { field: 'newValue' };
+    
+        const error = new Error('Forced error');
+        const findOneAndUpdateStub = sinon.stub(NewsletterUser, 'findOneAndUpdate').throws(error);
+    
+        try {
+          await updateNewsletterUserById(id, update);
+        } catch (error: any) {
+          expect(error.message).to.equal('Bad data');
+        }
+    
+        expect(findOneAndUpdateStub.calledOnce).to.be.true;
+        expect(findOneAndUpdateStub.calledWith({ _id: id }, sinon.match.any, sinon.match.any)).to.be.true;
+      });
+    
   });
