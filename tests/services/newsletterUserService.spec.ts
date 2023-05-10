@@ -44,10 +44,6 @@ describe('Newsletter User Services Suite', function() {
         expect(res.email).to.equal(userEmail)
     })
 
-    // it('should not create a newsletter user', async () => {
-    //     // expect(await createNewsletterUser({ name: 'steve' })).to.throw('')
-    // })
-
     it('should return all newsletter users (3)', async () => {
         const res = await getAllNewsletterUsers()
         console.log(res)
