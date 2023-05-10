@@ -172,6 +172,5 @@ describe('GetAllNewsletterUsers Service 500 errors', function() {
         // Assertions
         expect(response.status).to.equal(500)
         expect(response.body).to.equal('Error getting users')
-        // expect(response.body.error).to.be.ok
         });
 })
